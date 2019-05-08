@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+'use strict';
+
+const path = require('path');
+const command = require(path.resolve(__dirname, '..', 'lib', 'cli.js'));
+
+command.runCommand();
+

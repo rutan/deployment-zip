@@ -1,0 +1,52 @@
+{
+  "name": "@rutan/deployment-zip",
+  "version": "0.1.0",
+  "author": "ru_shalm <ru_shalm@hazimu.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/rutan/deployment-zip",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rutan/deployment-zip"
+  },
+  "bin": {
+    "deployment-zip": "bin/deployment-zip"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "scripts": {
+    "start": "node ./bin/deployment-zip",
+    "build": "run-s clean build:*",
+    "build:ts": "tsc",
+    "watch": "npm run clean && run-p watch:*",
+    "watch:ts": "tsc -w",
+    "clean": "rimraf ./lib",
+    "precommit": "lint-staged",
+    "prepublish": "npm run build"
+  },
+  "lint-staged": {
+    "*.{ts,js,json}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "colors": "^1.3.3",
+    "commander": "^2.20.0",
+    "glob": "^7.1.4",
+    "ignore": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.0",
+    "husky": "^2.2.0",
+    "lint-staged": "^8.1.6",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.17.0",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.4.5"
+  }
+}
