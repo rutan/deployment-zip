@@ -24,7 +24,7 @@
     "watch": "npm run clean && run-p watch:*",
     "watch:ts": "tsc -w",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write ./src",
+    "format": "prettier --write .",
     "clean": "rimraf ./lib",
     "postinstall": "husky install",
     "precommit": "lint-staged",
