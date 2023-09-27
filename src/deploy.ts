@@ -3,10 +3,10 @@ import * as path from "path";
 import { glob } from "glob";
 import { gray, green } from "colors/safe";
 import ignore from "ignore";
-import * as archiver from "archiver";
+import archiver from "archiver";
 import { Config } from "./config";
 
-export function deploy(directoryPath: string, config: Config) {
+export function deploy(directoryPath: string, config: Config): Promise<number> {
   return new Promise((resolve, reject) => {
     directoryPath = path.resolve(directoryPath);
 

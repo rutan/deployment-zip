@@ -6,7 +6,10 @@ import { deploy } from "./deploy";
 
 export function runCommand() {
   const packageJSON = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, "..", "package.json"), "utf-8"),
+    fs.readFileSync(
+      path.resolve(__dirname, "..", "..", "package.json"),
+      "utf-8",
+    ),
   );
 
   program

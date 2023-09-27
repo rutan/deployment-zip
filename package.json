@@ -11,16 +11,19 @@
   "bin": {
     "deployment-zip": "bin/deployment-zip"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "types": "lib/cjs/index.d.ts",
+  "module": "lib/esm/index.js",
   "files": [
     "bin",
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
     "start": "node ./bin/deployment-zip",
-    "build": "run-s clean build:*",
-    "build:ts": "tsc",
+    "build": "run-s lint clean && run-p build:*",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
     "watch": "npm run clean && run-p watch:*",
     "watch:ts": "tsc -w",
     "type-check": "tsc --noEmit",
@@ -44,6 +47,7 @@
     "ignore": "^5.2.4"
   },
   "devDependencies": {
+    "@types/archiver": "^5.3.3",
     "@types/glob": "^8.1.0",
     "@types/node": "^20.7.0",
     "husky": "^8.0.3",
