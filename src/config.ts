@@ -16,7 +16,7 @@ export interface Config {
 
 export function readConfig(configPath: string): Config {
   if (!configPath) configPath = DEFAULT_PATH;
-  configPath = path.resolve(process.cwd(), DEFAULT_PATH);
+  configPath = path.resolve(process.cwd(), configPath);
 
   if (!fs.existsSync(configPath)) return Object.assign({}, DEFAULT_CONFIG);
   return Object.assign({}, DEFAULT_CONFIG, require(configPath));
