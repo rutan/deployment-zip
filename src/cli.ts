@@ -1,4 +1,4 @@
-import * as program from "commander";
+import { program } from "commander";
 import * as path from "path";
 import * as fs from "fs";
 import { readConfig } from "./config";
@@ -6,7 +6,7 @@ import { deploy } from "./deploy";
 
 export function runCommand() {
   const packageJSON = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, "..", "package.json"), "utf-8")
+    fs.readFileSync(path.resolve(__dirname, "..", "package.json"), "utf-8"),
   );
 
   program
@@ -14,7 +14,7 @@ export function runCommand() {
     .usage("[options] <directory>")
     .option(
       "-c, --config <config_file>",
-      "config file path [.deploment-zip.js]"
+      "config file path [.deploment-zip.js]",
     )
     .option("-o, --output <output file>", "output zip file")
     .parse(process.argv);
@@ -24,15 +24,18 @@ export function runCommand() {
     program.outputHelp();
     return;
   }
-  const config = readConfig(program.config);
-  if (program.output) config.output = program.output;
+
+  const options = program.opts();
+
+  const config = readConfig(options.config);
+  if (options.output) config.output = options.output;
 
   deploy(inputDirectory, config)
     .then(() => {
       console.log(`\ncomplete! -> ${path.resolve(config.output)}`);
       process.exit(0);
     })
-    .catch(e => {
+    .catch((e) => {
       console.error("ERROR!");
       console.error(e);
       process.exit(1);

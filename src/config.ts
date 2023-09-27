@@ -5,7 +5,7 @@ const DEFAULT_PATH = ".deployment-zip.js";
 const DEFAULT_CONFIG = {
   ignore: [],
   output: "output.zip",
-  outputLog: true
+  outputLog: true,
 };
 
 export interface Config {
