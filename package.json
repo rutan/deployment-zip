@@ -11,42 +11,50 @@
   "bin": {
     "deployment-zip": "bin/deployment-zip"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "types": "lib/cjs/index.d.ts",
+  "module": "lib/esm/index.js",
   "files": [
     "bin",
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
     "start": "node ./bin/deployment-zip",
-    "build": "run-s clean build:*",
-    "build:ts": "tsc",
+    "build": "run-s lint clean && run-p build:*",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
     "watch": "npm run clean && run-p watch:*",
     "watch:ts": "tsc -w",
+    "type-check": "tsc --noEmit",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
     "clean": "rimraf ./lib",
+    "postinstall": "husky install",
     "precommit": "lint-staged",
     "prepublish": "npm run build"
   },
   "lint-staged": {
     "*.{ts,js,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "dependencies": {
-    "archiver": "^5.0.0",
+    "archiver": "^6.0.1",
     "colors": "^1.4.0",
-    "commander": "^6.0.0",
-    "glob": "^7.1.6",
-    "ignore": "^5.1.8"
+    "commander": "^11.0.0",
+    "glob": "^4.5.3",
+    "ignore": "^5.2.4"
   },
   "devDependencies": {
-    "@types/node": "^14.0.26",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.11",
+    "@types/archiver": "^5.3.3",
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.7.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.0.5",
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.7"
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2"
   }
 }

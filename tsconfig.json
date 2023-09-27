@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "outDir": "./lib/",
-    "noImplicitAny": false,
-    "sourceMap": false,
-    "pretty": true,
-    "alwaysStrict": true,
+    "target": "es2019",
+    "module": "esnext",
+    "outDir": "./lib",
     "declaration": true,
-    "types": ["node"]
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "lib"]

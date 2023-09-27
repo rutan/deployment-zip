@@ -5,7 +5,7 @@ const DEFAULT_PATH = ".deployment-zip.js";
 const DEFAULT_CONFIG = {
   ignore: [],
   output: "output.zip",
-  outputLog: true
+  outputLog: true,
 };
 
 export interface Config {
@@ -14,9 +14,9 @@ export interface Config {
   outputLog: boolean;
 }
 
-export function readConfig(configPath: string): Config {
+export function readConfig(configPath?: string): Config {
   if (!configPath) configPath = DEFAULT_PATH;
-  configPath = path.resolve(process.cwd(), DEFAULT_PATH);
+  configPath = path.resolve(process.cwd(), configPath);
 
   if (!fs.existsSync(configPath)) return Object.assign({}, DEFAULT_CONFIG);
   return Object.assign({}, DEFAULT_CONFIG, require(configPath));

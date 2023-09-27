@@ -2,7 +2,6 @@
 'use strict';
 
 const path = require('path');
-const command = require(path.resolve(__dirname, '..', 'lib', 'cli.js'));
+const command = require(path.resolve(__dirname, '..', 'lib', 'cjs', 'cli.js'));
 
 command.runCommand();
-
