@@ -30,7 +30,7 @@
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "clean": "rimraf ./lib",
-    "postinstall": "husky install",
+    "prepare": "husky install",
     "precommit": "lint-staged",
     "prepublish": "npm run build"
   },
