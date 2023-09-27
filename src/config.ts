@@ -14,7 +14,7 @@ export interface Config {
   outputLog: boolean;
 }
 
-export function readConfig(configPath: string): Config {
+export function readConfig(configPath?: string): Config {
   if (!configPath) configPath = DEFAULT_PATH;
   configPath = path.resolve(process.cwd(), configPath);
 

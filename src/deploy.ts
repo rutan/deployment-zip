@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
-import * as colors from "colors/safe";
-import * as ignore from "ignore";
+import { gray, green } from "colors/safe";
+import ignore from "ignore";
 import * as archiver from "archiver";
 import { Config } from "./config";
 
@@ -10,7 +10,7 @@ export function deploy(directoryPath: string, config: Config) {
   return new Promise((resolve, reject) => {
     directoryPath = path.resolve(directoryPath);
 
-    const ig = (ignore as any)().add(config.ignore);
+    const ig = ignore().add(config.ignore);
 
     const archive = archiver("zip", {
       zlib: { level: 9 },
@@ -34,11 +34,9 @@ export function deploy(directoryPath: string, config: Config) {
           const relativePath = path.relative(directoryPath, filePath);
 
           if (ig.ignores(relativePath)) {
-            if (config.outputLog)
-              console.log(colors.gray(`skip ${relativePath}`));
+            if (config.outputLog) console.log(gray(`skip ${relativePath}`));
           } else {
-            if (config.outputLog)
-              console.log(colors.green(`add  ${relativePath}`));
+            if (config.outputLog) console.log(green(`add  ${relativePath}`));
             archive.append(fs.createReadStream(filePath), {
               name: relativePath,
             });
