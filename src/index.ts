@@ -1,3 +1,3 @@
-export * from "./cli";
-export * from "./config";
-export * from "./deploy";
+export * from './config.js';
+export * from './utils.js';
+export * from './deploy.js';

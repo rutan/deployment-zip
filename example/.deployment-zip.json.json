@@ -1,0 +1,9 @@
+{
+  "zip": {
+    "output": "tmp/output.zip"
+  },
+  "copy": {
+    "outDir": "tmp/output"
+  },
+  "ignore": [".*", "*.dat", "skip.txt", "abc/file4.txt"]
+}

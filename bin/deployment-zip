@@ -1,7 +1,3 @@
 #!/usr/bin/env node
-'use strict';
 
-const path = require('path');
-const command = require(path.resolve(__dirname, '..', 'lib', 'cjs', 'cli.js'));
-
-command.runCommand();
+import('../lib/cli.js');

@@ -1,6 +1,8 @@
 {
   "name": "@rutan/deployment-zip",
-  "version": "0.2.1",
+  "type": "module",
+  "version": "0.3.0",
+  "description": "A CLI tool to create a deployment zip file.",
   "author": "ru_shalm <ru_shalm@hazimu.com>",
   "license": "MIT",
   "homepage": "https://github.com/rutan/deployment-zip",
@@ -11,50 +13,42 @@
   "bin": {
     "deployment-zip": "bin/deployment-zip"
   },
-  "main": "lib/cjs/index.js",
-  "types": "lib/cjs/index.d.ts",
-  "module": "lib/esm/index.js",
-  "files": [
-    "bin",
-    "lib",
-    "src"
-  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "module": "lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "files": ["bin", "lib", "src"],
   "scripts": {
     "start": "node ./bin/deployment-zip",
-    "build": "run-s lint clean && run-p build:*",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json",
-    "build:esm": "tsc -p ./tsconfig.esm.json",
-    "watch": "npm run clean && run-p watch:*",
-    "watch:ts": "tsc -w",
-    "type-check": "tsc --noEmit",
-    "lint": "prettier --check .",
-    "format": "prettier --write .",
-    "clean": "rimraf ./lib",
-    "prepare": "husky install",
-    "precommit": "lint-staged",
-    "prepublish": "npm run build"
-  },
-  "lint-staged": {
-    "*.{ts,js,json}": [
-      "prettier --write"
-    ]
+    "dev": "jiti ./src/cli.ts",
+    "build": "run-s clean build:*",
+    "build:tsc": "tsc",
+    "lint": "run-s lint:*",
+    "lint:biome": "biome check ./",
+    "lint:tsc": "tsc --noEmit",
+    "format": "biome check ./ --apply",
+    "clean": "rimraf ./lib"
   },
   "dependencies": {
-    "archiver": "^6.0.1",
-    "colors": "^1.4.0",
-    "commander": "^11.0.0",
-    "glob": "^4.5.3",
-    "ignore": "^5.2.4"
+    "archiver": "^7.0.0",
+    "citty": "^0.1.6",
+    "consola": "^3.2.3",
+    "ignore": "^5.3.1",
+    "jiti": "^1.21.0"
   },
   "devDependencies": {
-    "@types/archiver": "^5.3.3",
-    "@types/glob": "^8.1.0",
-    "@types/node": "^20.7.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.3",
+    "@biomejs/biome": "^1.6.0",
+    "@biomejs/cli-win32-x64": "^1.6.0",
+    "@types/archiver": "^6.0.2",
+    "@types/node": "^20.11.25",
+    "npm-run-all2": "^6.1.2",
     "rimraf": "^5.0.5",
-    "typescript": "^5.2.2"
-  }
+    "typescript": "^5.4.2"
+  },
+  "packageManager": "pnpm@8.15.1"
 }
