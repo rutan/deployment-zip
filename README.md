@@ -17,7 +17,7 @@ use `./.deployment-zip.js`
 ```
 export default {
   // .gitignore style
-  ignore: [
+  ignores: [
     '.env'
   ],
 

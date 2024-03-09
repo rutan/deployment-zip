@@ -1,5 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import type { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
 import createJITI from 'jiti';
 
@@ -45,4 +46,26 @@ export async function getFilesRecursively(dir: string) {
   }
 
   return files;
+}
+
+export function readStreamBuffer(stream: Readable) {
+  return new Promise<Buffer>((resolve, reject) => {
+    let data = Buffer.from('');
+    stream.on('data', (chunk: Buffer) => {
+      data = Buffer.concat([data, chunk]);
+    });
+    stream.on('end', () => resolve(data));
+    stream.on('error', reject);
+  });
+}
+
+export function readStreamText(stream: Readable) {
+  return new Promise<string>((resolve, reject) => {
+    const data: string[] = [];
+    stream.on('data', (chunk: Buffer) => {
+      data.push(chunk.toString('utf-8'));
+    });
+    stream.on('end', () => resolve(data.join('')));
+    stream.on('error', reject);
+  });
 }

@@ -1,9 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import type { Readable } from 'node:stream';
 import { loadConfig } from './utils.js';
 
+type Promisable<T> = T | Promise<T>;
+
 export interface Config {
-  ignore?: string[];
+  ignores?: string[];
   ignoreFile?: string | string[];
   zip: {
     output: string | ((targetDir: string) => string);
@@ -11,6 +14,13 @@ export interface Config {
   copy: {
     outDir: string | ((targetDir: string) => string);
   };
+  plugins?: {
+    transform?: (args: {
+      name: string;
+      stream: Readable;
+      mode: 'zip' | 'copy';
+    }) => Promisable<Readable | string | undefined>;
+  }[];
 }
 
 const DEFAULT_CONFIG = {
@@ -20,6 +30,7 @@ const DEFAULT_CONFIG = {
   copy: {
     outDir: 'output',
   },
+  plugins: [],
 } satisfies Config;
 
 export function defineConfig(config: Partial<Config>) {

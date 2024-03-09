@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+
 module.exports = {
   zip: {
     output: () => {
@@ -7,5 +9,5 @@ module.exports = {
   copy: {
     outDir: `tmp/raw-${Date.now()}`,
   },
-  ignore: ['.*', '*.dat', 'skip.txt', 'abc/file4.txt'],
+  ignores: ['.*', '*.dat', 'skip.txt', 'abc/file4.txt'],
 };

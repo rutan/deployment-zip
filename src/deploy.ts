@@ -1,6 +1,7 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
+import { Readable } from 'node:stream';
 import archiver from 'archiver';
 import { consola } from 'consola';
 import { colorize } from 'consola/utils';
@@ -12,7 +13,7 @@ export async function createIgnore(config: Config) {
   // @ts-ignore
   const ig: Ignore = ignore();
 
-  if (config.ignore) ig.add(config.ignore);
+  if (config.ignores) ig.add(config.ignores);
   if (config.ignoreFile) {
     const ignoreFiles = Array.isArray(config.ignoreFile) ? config.ignoreFile : [config.ignoreFile];
     for (const file of ignoreFiles) {
@@ -22,6 +23,26 @@ export async function createIgnore(config: Config) {
   }
 
   return ig;
+}
+
+export async function buildReadStream({
+  inputFile,
+  config,
+  mode,
+}: {
+  inputFile: string;
+  config: Config;
+  mode: 'zip' | 'copy';
+}) {
+  let stream: Readable = createReadStream(inputFile);
+
+  for (const plugin of config.plugins ?? []) {
+    const result = plugin.transform && (await plugin.transform({ name: inputFile, stream, mode }));
+    if (result instanceof Readable) stream = result;
+    if (typeof result === 'string') stream = Readable.from(result);
+  }
+
+  return stream;
 }
 
 export async function deployZip(targetDir: string, config: Config) {
@@ -44,7 +65,12 @@ export async function deployZip(targetDir: string, config: Config) {
         consola.log(colorize('gray', `skip ${relativePath}`));
       } else {
         consola.log(colorize('green', `add ${relativePath}`));
-        archive.append(createReadStream(file), { name: relativePath });
+        const inputStream = await buildReadStream({
+          inputFile: file,
+          config,
+          mode: 'zip',
+        });
+        archive.append(inputStream, { name: relativePath });
       }
     }),
   );
@@ -82,7 +108,11 @@ export async function deployCopy(targetDir: string, config: Config) {
         await mkdir(dirname(writePath), { recursive: true });
 
         const outputStream = createWriteStream(join(outputDirName, relativePath));
-        const inputStream = createReadStream(file);
+        const inputStream = await buildReadStream({
+          inputFile: file,
+          config,
+          mode: 'copy',
+        });
         inputStream.pipe(outputStream);
       }
     }),

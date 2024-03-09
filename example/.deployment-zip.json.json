@@ -5,5 +5,5 @@
   "copy": {
     "outDir": "tmp/output"
   },
-  "ignore": [".*", "*.dat", "skip.txt", "abc/file4.txt"]
+  "ignores": [".*", "*.dat", "skip.txt", "abc/file4.txt"]
 }
