@@ -6,6 +6,7 @@ import { consola } from 'consola';
 import { colorize } from 'consola/utils';
 import ignore, { type Ignore } from 'ignore';
 import type { Config } from '../config.js';
+import { callPluginHook } from '../plugin.js';
 import type { DeploymentMode } from '../types.js';
 import { getFilesRecursively } from '../utils.js';
 
@@ -34,13 +35,22 @@ export async function buildReadStream({
   config: Config;
   mode: DeploymentMode;
 }) {
-  let stream: Readable = createReadStream(inputFile);
-
-  for (const plugin of config.plugins ?? []) {
-    const result = plugin.transform && (await plugin.transform({ name: inputFile, stream, mode }));
-    if (result instanceof Readable) stream = result;
-    if (typeof result === 'string') stream = Readable.from(result);
-  }
+  const [{ stream }] = await callPluginHook({
+    plugins: config.plugins,
+    hook: 'transform',
+    args: [
+      {
+        name: inputFile,
+        stream: createReadStream(inputFile),
+        mode,
+      },
+    ],
+    argsHook: ([params], result) => {
+      if (result instanceof Readable) return [{ ...params, stream: result }] as const;
+      if (typeof result === 'string') return [{ ...params, stream: Readable.from(result) }] as const;
+      return [params] as const;
+    },
+  });
 
   return stream;
 }

@@ -1,10 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { Readable } from 'node:stream';
-import type { DeploymentMode } from './types.js';
+import type { Plugin } from './plugin.js';
 import { loadConfig } from './utils.js';
-
-type Promisable<T> = T | Promise<T>;
 
 export interface Config {
   ignores?: string[];
@@ -23,13 +20,7 @@ export interface Config {
     secretAccessKey?: string;
     endpoint?: string;
   };
-  plugins?: {
-    transform?: (args: {
-      name: string;
-      stream: Readable;
-      mode: DeploymentMode;
-    }) => Promisable<Readable | string | undefined>;
-  }[];
+  plugins?: Plugin[];
 }
 
 const DEFAULT_CONFIG = {
