@@ -20,6 +20,10 @@
     ".": {
       "import": "./lib/index.js",
       "types": "./lib/index.d.ts"
+    },
+    "./plugins": {
+      "import": "./lib/plugins/index.js",
+      "types": "./lib/plugins/index.d.ts"
     }
   },
   "files": ["bin", "lib", "src"],
@@ -43,7 +47,8 @@
     "consola": "^3.2.3",
     "ignore": "^5.3.1",
     "jiti": "^1.21.0",
-    "mime": "^4.0.1"
+    "mime": "^4.0.1",
+    "node-html-parser": "^6.1.12"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.0",
