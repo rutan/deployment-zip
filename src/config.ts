@@ -19,6 +19,7 @@ export interface Config {
     accessKeyId?: string;
     secretAccessKey?: string;
     endpoint?: string;
+    parallel?: boolean | number;
   };
   plugins?: Plugin[];
 }
