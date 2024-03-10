@@ -1,6 +1,7 @@
 # @rutan/deployment-zip
 
 ## How to use
+
 ```bash
 $ npm install -g @rutan/deployment-zip
 ```
@@ -14,16 +15,23 @@ $ deployment-zip ./game
 use `./.deployment-zip.js`
 
 ```
-module.exports = {
-  // output file name
-  output: 'output.zip',
+export default {
+  // .gitignore style
+  ignores: [
+    '.env'
+  ],
 
-  // ignore file (format: .gitignore)
-  ignore: [
-    'hoge.jpg',
-    'fuga*',
-    'piyo/',
-    '!piyo/poyo.png'
-  ]
+  // .gitignore file
+  ignoreFile: '.deployment-zip-ignore'
+
+  // mode zip config
+  zip: {
+    output: 'output.zip'
+  },
+
+  // mode copy config
+  copy: {
+    outDir: 'outputDir',
+  }
 };
 ```

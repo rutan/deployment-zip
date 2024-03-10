@@ -1,23 +1,62 @@
-import * as fs from "fs";
-import * as path from "path";
-
-const DEFAULT_PATH = ".deployment-zip.js";
-const DEFAULT_CONFIG = {
-  ignore: [],
-  output: "output.zip",
-  outputLog: true,
-};
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import type { Plugin } from './plugin.js';
+import { loadConfig } from './utils.js';
 
 export interface Config {
-  ignore: string[];
-  output: string;
-  outputLog: boolean;
+  ignores?: string[];
+  ignoreFile?: string | string[];
+  zip: {
+    output: string | ((targetDir: string) => string);
+  };
+  copy: {
+    outDir: string | ((targetDir: string) => string);
+  };
+  s3: {
+    bucket: string;
+    keyPrefix?: string;
+    region?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    endpoint?: string;
+  };
+  plugins?: Plugin[];
 }
 
-export function readConfig(configPath?: string): Config {
-  if (!configPath) configPath = DEFAULT_PATH;
-  configPath = path.resolve(process.cwd(), configPath);
+const DEFAULT_CONFIG = {
+  zip: {
+    output: 'output.zip',
+  },
+  copy: {
+    outDir: 'output',
+  },
+  s3: {
+    bucket: '',
+  },
+  plugins: [],
+} satisfies Config;
 
-  if (!fs.existsSync(configPath)) return Object.assign({}, DEFAULT_CONFIG);
-  return Object.assign({}, DEFAULT_CONFIG, require(configPath));
+export function defineConfig(config: Partial<Config>) {
+  return config;
+}
+
+export async function loadDeploymentZipConfig(configFilePath: string): Promise<Config> {
+  const config = await loadConfig(configFilePath);
+  return {
+    ...DEFAULT_CONFIG,
+    ...config,
+    zip: {
+      ...DEFAULT_CONFIG.zip,
+      ...config.zip,
+    },
+    copy: {
+      ...DEFAULT_CONFIG.copy,
+      ...config.copy,
+    },
+  };
+}
+
+export async function loadPackageJSON(): Promise<Record<string, any>> {
+  const __dirname = new URL('.', import.meta.url).pathname;
+  return JSON.parse(await readFile(resolve(__dirname, '../package.json'), 'utf-8'));
 }

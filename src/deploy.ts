@@ -1,50 +1,51 @@
-import * as fs from "fs";
-import * as path from "path";
-import { glob } from "glob";
-import { gray, green } from "colors/safe";
-import ignore from "ignore";
-import archiver from "archiver";
-import { Config } from "./config";
+import type { Config } from './config.js';
+import { deployCopy, deployS3, deployZip } from './deploy/index.js';
+import { callPluginHook } from './plugin.js';
+import type { DeploymentMode } from './types.js';
 
-export function deploy(directoryPath: string, config: Config): Promise<number> {
-  return new Promise((resolve, reject) => {
-    directoryPath = path.resolve(directoryPath);
+export async function deploy(mode: DeploymentMode, inputDir: string, userConfig: Config) {
+  const [config] = await callPluginHook({
+    plugins: userConfig.plugins,
+    hook: 'options',
+    args: [userConfig],
+    argsHook: (args, newConfig) => {
+      if (newConfig) return [newConfig] as const;
+      return args;
+    },
+  });
 
-    const ig = ignore().add(config.ignore);
+  await callPluginHook({
+    plugins: config.plugins,
+    hook: 'deployStart',
+    args: [config],
+  });
 
-    const archive = archiver("zip", {
-      zlib: { level: 9 },
+  try {
+    switch (mode) {
+      case 'zip':
+        await deployZip(inputDir, config);
+        break;
+      case 'copy':
+        await deployCopy(inputDir, config);
+        break;
+      case 's3':
+        await deployS3(inputDir, config);
+        break;
+      default:
+        throw new Error(`unknown mode: ${mode}`);
+    }
+  } catch (e) {
+    await callPluginHook({
+      plugins: config.plugins,
+      hook: 'deployEnd',
+      args: [e as Error],
     });
-    const outputStream = fs.createWriteStream(config.output);
-    outputStream.on("close", () => resolve(archive.pointer()));
-    outputStream.on("error", reject);
-    archive.pipe(outputStream);
+    throw e;
+  }
 
-    glob(path.join(directoryPath, "**", "*"), async (err, matches) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      await Promise.all(
-        matches.map(async (filePath) => {
-          const ret = await fs.promises.stat(filePath);
-          if (ret.isDirectory()) return;
-
-          const relativePath = path.relative(directoryPath, filePath);
-
-          if (ig.ignores(relativePath)) {
-            if (config.outputLog) console.log(gray(`skip ${relativePath}`));
-          } else {
-            if (config.outputLog) console.log(green(`add  ${relativePath}`));
-            archive.append(fs.createReadStream(filePath), {
-              name: relativePath,
-            });
-          }
-        }),
-      );
-
-      archive.finalize();
-    });
+  await callPluginHook({
+    plugins: config.plugins,
+    hook: 'deployEnd',
+    args: [],
   });
 }
