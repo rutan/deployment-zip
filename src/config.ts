@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { Readable } from 'node:stream';
+import type { DeploymentMode } from './types.js';
 import { loadConfig } from './utils.js';
 
 type Promisable<T> = T | Promise<T>;
@@ -14,11 +15,19 @@ export interface Config {
   copy: {
     outDir: string | ((targetDir: string) => string);
   };
+  s3: {
+    bucket: string;
+    keyPrefix?: string;
+    region?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    endpoint?: string;
+  };
   plugins?: {
     transform?: (args: {
       name: string;
       stream: Readable;
-      mode: 'zip' | 'copy';
+      mode: DeploymentMode;
     }) => Promisable<Readable | string | undefined>;
   }[];
 }
@@ -29,6 +38,9 @@ const DEFAULT_CONFIG = {
   },
   copy: {
     outDir: 'output',
+  },
+  s3: {
+    bucket: '',
   },
   plugins: [],
 } satisfies Config;

@@ -2,7 +2,8 @@ import { resolve } from 'node:path';
 import { defineCommand, runMain, showUsage } from 'citty';
 import { consola } from 'consola';
 import { loadDeploymentZipConfig, loadPackageJSON } from './config.js';
-import { deployCopy, deployZip } from './deploy.js';
+import { deploy } from './deploy.js';
+import { isDeploymentMode } from './types.js';
 
 (async () => {
   const { name, version, description } = await loadPackageJSON();
@@ -27,29 +28,20 @@ import { deployCopy, deployZip } from './deploy.js';
       },
     } as const,
     async run({ args, cmd }) {
-      const targetDir = args._[0];
-      if (!targetDir) {
+      const inputDir = args._[0];
+      if (!inputDir) {
         await showUsage(cmd);
         process.exit(0);
       }
 
+      if (!isDeploymentMode(args.mode)) {
+        consola.error(`Invalid mode: ${args.mode}`);
+        process.exit(1);
+      }
+
       consola.info(`load config: ${resolve(args.config)}`);
       const config = await loadDeploymentZipConfig(args.config);
-
-      switch (args.mode) {
-        case 'zip':
-          await deployZip(targetDir, config);
-          break;
-        case 'copy':
-          await deployCopy(targetDir, config);
-          break;
-        case 's3':
-          consola.error('not implemented');
-          break;
-        default:
-          consola.error(`unknown mode: ${args.mode}`);
-          process.exit(1);
-      }
+      await deploy(args.mode, inputDir, config);
     },
   });
 
