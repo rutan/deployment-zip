@@ -65,7 +65,7 @@ export async function eachDeployFiles(
     mode: DeploymentMode;
     inputDir: string;
     config: Config;
-    parallel?: boolean;
+    parallel?: boolean | number;
   },
   cb: (obj: {
     file: string;
@@ -93,12 +93,24 @@ export async function eachDeployFiles(
     }
   };
 
-  if (parallel) {
-    await Promise.all(files.map(taskFunc));
+  const parallelCount = typeof parallel === 'number' ? parallel : parallel ? 10 : 1;
+
+  if (parallelCount > 1) {
+    for (const chunk of chunkArray(files, parallelCount)) {
+      await Promise.all(chunk.map(taskFunc));
+    }
     return;
   }
 
   for (const file of files) {
     await taskFunc(file);
   }
+}
+
+function chunkArray<T>(array: T[], size: number) {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
 }

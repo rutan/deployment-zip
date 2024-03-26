@@ -22,7 +22,9 @@ export async function loadTsConfig(configFilePath: string) {
   const __filename = fileURLToPath(import.meta.url);
 
   // @ts-ignore
-  const jiti = createJITI(__filename);
+  const jiti = createJITI(__filename, {
+    esmResolve: true,
+  });
   const module = jiti(resolve(configFilePath));
 
   return module.default || module;

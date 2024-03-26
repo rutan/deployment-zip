@@ -36,6 +36,7 @@ export async function deployS3(inputDir: string, config: Config) {
       mode: 's3',
       inputDir,
       config,
+      parallel: config.s3.parallel ?? 10,
     },
     async ({ file, inputStream, relativePath }) => {
       const extName = extname(file);
@@ -48,12 +49,6 @@ export async function deployS3(inputDir: string, config: Config) {
           Body: inputStream,
           ContentType: mimeType ?? 'application/octet-stream',
         },
-      });
-
-      upload.on('httpUploadProgress', (progress) => {
-        if (!progress.loaded || !progress.total) return;
-        const rate = Math.floor((100 * progress.loaded) / progress.total);
-        consola.log(` Uploading... ${rate}%`);
       });
 
       await upload.done();
