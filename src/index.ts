@@ -1,4 +1,5 @@
 export * from './deploy/index.js';
+export * from './plugins/index.js';
 export * from './config.js';
 export * from './deploy.js';
 export * from './plugin.js';
