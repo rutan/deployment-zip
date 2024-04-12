@@ -16,20 +16,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "module": "lib/index.js",
-  "exports": {
-    ".": {
-      "import": {
-        "default": "./lib/index.js",
-        "types": "./lib/index.d.ts"
-      }
-    },
-    "./plugins": {
-      "import": {
-        "default": "./lib/plugins/index.js",
-        "types": "./lib/plugins/index.d.ts"
-      }
-    }
-  },
   "files": ["bin", "lib", "src"],
   "scripts": {
     "start": "node ./bin/deployment-zip",
