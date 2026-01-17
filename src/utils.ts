@@ -2,6 +2,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
+import { StringDecoder } from 'node:string_decoder';
 import { createJiti } from 'jiti';
 import type { Config } from './config.js';
 
@@ -61,11 +62,16 @@ export function readStreamBuffer(stream: Readable) {
 
 export function readStreamText(stream: Readable) {
   return new Promise<string>((resolve, reject) => {
+    const decoder = new StringDecoder('utf8');
     const data: string[] = [];
+
     stream.on('data', (chunk: Buffer) => {
-      data.push(chunk.toString('utf-8'));
+      data.push(decoder.write(chunk));
     });
-    stream.on('end', () => resolve(data.join('')));
+    stream.on('end', () => {
+      data.push(decoder.end());
+      resolve(data.join(''));
+    });
     stream.on('error', reject);
   });
 }

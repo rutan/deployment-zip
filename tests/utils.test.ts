@@ -50,4 +50,29 @@ describe('utils', () => {
     const stream = Readable.from([Buffer.from('foo'), Buffer.from('bar')]);
     await expect(readStreamText(stream)).resolves.toBe('foobar');
   });
+
+  it('readStreamText aggregates text data', async () => {
+    const buffer = Buffer.from('テスト', 'utf-8');
+    const stream = readableFromChunks(buffer, Array(buffer.length).fill(1));
+    await expect(readStreamText(stream)).resolves.toBe('テスト');
+  });
 });
+
+function readableFromChunks(buf: Buffer, chunkSizes: number[]) {
+  let offset = 0;
+  let i = 0;
+
+  return new Readable({
+    read() {
+      if (offset >= buf.length) {
+        this.push(null);
+        return;
+      }
+      const size = chunkSizes[i] ?? chunkSizes[chunkSizes.length - 1] ?? 1;
+      i++;
+      const end = Math.min(offset + size, buf.length);
+      this.push(buf.subarray(offset, end));
+      offset = end;
+    },
+  });
+}
