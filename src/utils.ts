@@ -1,8 +1,8 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { Readable } from 'node:stream';
-import { fileURLToPath } from 'node:url';
 import { StringDecoder } from 'node:string_decoder';
+import { fileURLToPath } from 'node:url';
 import { createJiti } from 'jiti';
 import type { Config } from './config.js';
 
