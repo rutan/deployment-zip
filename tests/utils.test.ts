@@ -51,7 +51,7 @@ describe('utils', () => {
     await expect(readStreamText(stream)).resolves.toBe('foobar');
   });
 
-  it('readStreamText aggregates text data', async () => {
+  it('readStreamText correctly handles multi-byte UTF-8 characters', async () => {
     const buffer = Buffer.from('テスト', 'utf-8');
     const stream = readableFromChunks(buffer, Array(buffer.length).fill(1));
     await expect(readStreamText(stream)).resolves.toBe('テスト');
