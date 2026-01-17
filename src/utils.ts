@@ -2,9 +2,10 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
-import createJITI from 'jiti';
+import { createJiti } from 'jiti';
+import type { Config } from './config.js';
 
-export async function loadConfig(configFilePath: string) {
+export async function loadConfig(configFilePath: string): Promise<Config> {
   if (
     configFilePath.endsWith('.ts') ||
     configFilePath.endsWith('.js') ||
@@ -18,19 +19,16 @@ export async function loadConfig(configFilePath: string) {
   throw new Error('Unsupported config file type');
 }
 
-export async function loadTsConfig(configFilePath: string) {
+export async function loadTsConfig(configFilePath: string): Promise<Config> {
   const __filename = fileURLToPath(import.meta.url);
 
-  // @ts-ignore
-  const jiti = createJITI(__filename, {
-    esmResolve: true,
+  const jiti = createJiti(__filename);
+  return await jiti.import(resolve(configFilePath), {
+    default: true,
   });
-  const module = jiti(resolve(configFilePath));
-
-  return module.default || module;
 }
 
-export async function loadJSONConfig(configFilePath: string) {
+export async function loadJSONConfig(configFilePath: string): Promise<Config> {
   return JSON.parse(await readFile(configFilePath, 'utf-8'));
 }
 
