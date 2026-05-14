@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Plugin } from './plugin.js';
 import { loadConfig } from './utils.js';
 
@@ -58,6 +59,6 @@ export async function loadDeploymentZipConfig(configFilePath: string): Promise<C
 }
 
 export async function loadPackageJSON(): Promise<Record<string, any>> {
-  const __dirname = new URL('.', import.meta.url).pathname;
+  const __dirname = fileURLToPath(new URL('.', import.meta.url));
   return JSON.parse(await readFile(resolve(__dirname, '../package.json'), 'utf-8'));
 }

@@ -1,6 +1,7 @@
 import { createReadStream } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { relative } from 'node:path';
+import { relative, sep } from 'node:path';
+import { sep as posixSep } from 'node:path/posix';
 import { Readable } from 'node:stream';
 import { consola } from 'consola';
 import { colorize } from 'consola/utils';
@@ -79,13 +80,14 @@ export async function eachDeployFiles(
 
   const taskFunc = async (file: string) => {
     const relativePath = relative(inputDir, file);
-    if (ig.ignores(relativePath)) {
-      consola.log(colorize('gray', `skip ${relativePath}`));
+    const normalizedRelativePath = relativePath.split(sep).join(posixSep);
+    if (ig.ignores(normalizedRelativePath)) {
+      consola.log(colorize('gray', `skip ${normalizedRelativePath}`));
     } else {
-      consola.log(colorize('green', `add ${relativePath}`));
+      consola.log(colorize('green', `add ${normalizedRelativePath}`));
       await cb({
         file,
-        relativePath,
+        relativePath: normalizedRelativePath,
         inputStream: await buildReadStream({
           inputFile: file,
           config,
