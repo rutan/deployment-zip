@@ -8,7 +8,7 @@
   "homepage": "https://github.com/rutan/deployment-zip",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rutan/deployment-zip"
+    "url": "git+https://github.com/rutan/deployment-zip.git"
   },
   "bin": {
     "deployment-zip": "bin/deployment-zip"
