@@ -31,7 +31,7 @@
     "lint": "run-s lint:*",
     "lint:oxfmt": "oxfmt --check .",
     "lint:oxlint": "oxlint .",
-    "lint:tsc": "tsc --noEmit",
+    "lint:tsc": "tsc --project tsconfig.test.json",
     "format": "run-s format:*",
     "format:oxfmt": "oxfmt --write .",
     "format:oxlint": "oxlint --fix .",
