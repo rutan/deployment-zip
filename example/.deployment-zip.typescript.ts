@@ -1,5 +1,5 @@
 import { defineConfig } from '../src/config.js';
-import { insertTagToHTMLHeadPlugin } from '../src/plugins/index.js';
+import { insertTagToHTMLHeadPlugin } from '../src/plugins/insertTagToHTMLHeadPlugin.js';
 import { readStreamText } from '../src/utils.js';
 
 export default defineConfig({

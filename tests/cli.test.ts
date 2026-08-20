@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { createTempDir } from './helpers.js';
+import { createTempDir } from './helpers';
 
 const require = createRequire(import.meta.url);
 const jitiCli = join(dirname(require.resolve('jiti/package.json')), 'lib', 'jiti-cli.mjs');

@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Plugin } from './plugin.js';
-import { loadConfig } from './utils.js';
+import type { Plugin } from './plugin';
+import { loadConfig } from './utils';
 
 export interface Config {
   ignores?: string[];

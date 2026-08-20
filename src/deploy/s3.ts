@@ -5,8 +5,8 @@ import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { Upload } from '@aws-sdk/lib-storage';
 import { consola } from 'consola';
 import mime from 'mime';
-import type { Config } from '../config.js';
-import { eachDeployFiles } from './common.js';
+import type { Config } from '../config';
+import { eachDeployFiles } from './common';
 
 function getProvider(config: Config) {
   if (config.s3.accessKeyId && config.s3.secretAccessKey) {

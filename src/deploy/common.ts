@@ -6,10 +6,10 @@ import { Readable } from 'node:stream';
 import { consola } from 'consola';
 import { colorize } from 'consola/utils';
 import ignore, { type Ignore } from 'ignore';
-import type { Config } from '../config.js';
-import { callPluginHook } from '../plugin.js';
-import type { DeploymentMode } from '../types.js';
-import { getFilesRecursively } from '../utils.js';
+import type { Config } from '../config';
+import { callPluginHook } from '../plugin';
+import type { DeploymentMode } from '../types';
+import { getFilesRecursively } from '../utils';
 
 export async function createIgnore(config: Config) {
   // @ts-ignore
