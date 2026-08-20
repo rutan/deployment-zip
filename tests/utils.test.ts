@@ -2,8 +2,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { describe, expect, it } from 'vitest';
-import { getFilesRecursively, loadConfig, readStreamBuffer, readStreamText } from '../src/utils.js';
-import { createTempDir } from './helpers.js';
+import { getFilesRecursively, loadConfig, readStreamBuffer, readStreamText } from '../src/utils';
+import { createTempDir } from './helpers';
 
 describe('utils', () => {
   it('loads data and executable config formats', async () => {

@@ -1,9 +1,9 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Config } from '../src/config.js';
-import type { Plugin } from '../src/plugin.js';
-import { createTempDir } from './helpers.js';
+import type { Config } from '../../src/config';
+import type { Plugin } from '../../src/plugin';
+import { createTempDir } from '../helpers';
 
 type UploadRecord = {
   bucket: string;
@@ -40,7 +40,7 @@ vi.mock('@aws-sdk/lib-storage', () => ({
   },
 }));
 
-const { deployS3 } = await import('../src/deploy/s3.js');
+const { deployS3 } = await import('../../src/deploy/s3.js');
 
 describe('S3 deployment', () => {
   beforeEach(() => {

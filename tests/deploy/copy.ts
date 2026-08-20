@@ -2,12 +2,12 @@ import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { describe, expect, it, vi } from 'vitest';
-import type { Config } from '../src/config.js';
-import { deploy } from '../src/deploy.js';
-import { deployCopy } from '../src/deploy/copy.js';
-import type { Plugin } from '../src/plugin.js';
-import { readStreamText } from '../src/utils.js';
-import { createTempDir } from './helpers.js';
+import type { Config } from '../../src/config';
+import { deployCopy } from '../../src/deploy/copy';
+import { deploy } from '../../src/deploy/deploy';
+import type { Plugin } from '../../src/plugin';
+import { readStreamText } from '../../src/utils';
+import { createTempDir } from '../helpers';
 
 describe('copy deployment', () => {
   it('copies the selected tree, transforms contents, and runs lifecycle hooks', async () => {

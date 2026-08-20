@@ -1,7 +1,9 @@
-import type { Config } from './config.js';
-import { deployCopy, deployS3, deployZip } from './deploy/index.js';
-import { callPluginHook } from './plugin.js';
-import type { DeploymentMode } from './types.js';
+import type { Config } from '../config';
+import { callPluginHook } from '../plugin';
+import type { DeploymentMode } from '../types';
+import { deployCopy } from './copy';
+import { deployS3 } from './s3';
+import { deployZip } from './zip';
 
 export async function deploy(mode: DeploymentMode, inputDir: string, userConfig: Config) {
   const [config] = await callPluginHook({
