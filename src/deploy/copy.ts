@@ -1,6 +1,7 @@
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 import { consola } from 'consola';
 import type { Config } from '../config.js';
 import { eachDeployFiles } from './common.js';
@@ -23,8 +24,8 @@ export async function deployCopy(inputDir: string, config: Config) {
       const writePath = join(outputDirName, relativePath);
       await mkdir(dirname(writePath), { recursive: true });
 
-      const outputStream = createWriteStream(join(outputDirName, relativePath));
-      inputStream.pipe(outputStream);
+      const outputStream = createWriteStream(writePath);
+      await pipeline(inputStream, outputStream);
     },
   );
 
