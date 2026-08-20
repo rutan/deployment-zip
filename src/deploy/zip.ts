@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import { consola } from 'consola';
 import type { Config } from '../config.js';
 import { eachDeployFiles } from './common.js';
@@ -13,7 +13,7 @@ export async function deployZip(inputDir: string, config: Config) {
 
   await mkdir(dirname(outputFileName), { recursive: true });
 
-  const archive = archiver('zip', {
+  const archive = new ZipArchive({
     zlib: { level: 9 },
   });
 

@@ -68,11 +68,7 @@ export async function eachDeployFiles(
     config: Config;
     parallel?: boolean | number;
   },
-  cb: (obj: {
-    file: string;
-    relativePath: string;
-    inputStream: Readable;
-  }) => Promise<void>,
+  cb: (obj: { file: string; relativePath: string; inputStream: Readable }) => Promise<void>,
 ): Promise<void> {
   const ig = await createIgnore(config);
   const files = await getFilesRecursively(inputDir);

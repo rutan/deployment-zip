@@ -1,5 +1,3 @@
-const fs = require('node:fs');
-
 module.exports = {
   zip: {
     output: () => {

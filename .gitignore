@@ -1,3 +1,4 @@
 /tmp
 /lib
 *.zip
+node_modules
