@@ -1,21 +1,13 @@
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { describe, expect, it } from 'vitest';
-import { getFilesRecursively, loadConfig, loadJSONConfig, readStreamBuffer, readStreamText } from '../src/utils.js';
+import { getFilesRecursively, loadConfig, readStreamBuffer, readStreamText } from '../src/utils.js';
+import { createTempDir } from './helpers.js';
 
 describe('utils', () => {
-  it('loadJSONConfig loads JSON config', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'deployment-zip-'));
-    const configPath = join(dir, 'config.json');
-    await writeFile(configPath, JSON.stringify({ root: 'dist' }), 'utf-8');
-
-    await expect(loadJSONConfig(configPath)).resolves.toEqual({ root: 'dist' });
-  });
-
-  it('loadConfig selects loader by extension', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'deployment-zip-'));
+  it('loads data and executable config formats', async () => {
+    const dir = await createTempDir();
     const jsonPath = join(dir, 'config.json');
     const tsPath = join(dir, 'config.ts');
     await writeFile(jsonPath, JSON.stringify({ root: 'public' }), 'utf-8');
@@ -27,7 +19,7 @@ describe('utils', () => {
   });
 
   it('getFilesRecursively returns nested files', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'deployment-zip-'));
+    const dir = await createTempDir();
     const nestedDir = join(dir, 'nested');
     await mkdir(nestedDir);
     const topFile = join(dir, 'a.txt');
@@ -44,11 +36,6 @@ describe('utils', () => {
   it('readStreamBuffer aggregates buffer data', async () => {
     const stream = Readable.from([Buffer.from('foo'), Buffer.from('bar')]);
     await expect(readStreamBuffer(stream)).resolves.toEqual(Buffer.from('foobar'));
-  });
-
-  it('readStreamText aggregates text data', async () => {
-    const stream = Readable.from([Buffer.from('foo'), Buffer.from('bar')]);
-    await expect(readStreamText(stream)).resolves.toBe('foobar');
   });
 
   it('readStreamText correctly handles multi-byte UTF-8 characters', async () => {
