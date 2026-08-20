@@ -20,7 +20,7 @@ function getProvider(config: Config) {
 }
 
 export async function deployS3(inputDir: string, config: Config) {
-  if (!config.s3.bucket) throw 's3.bucket is required';
+  if (!config.s3.bucket) throw new Error('s3.bucket is required');
 
   const deployTarget = config.s3.keyPrefix ? `${config.s3.bucket}/${config.s3.keyPrefix}` : config.s3.bucket;
   consola.start(`Deploying ${inputDir} to ${deployTarget}`);

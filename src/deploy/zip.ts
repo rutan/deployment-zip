@@ -16,6 +16,10 @@ export async function deployZip(inputDir: string, config: Config) {
   const archive = new ZipArchive({
     zlib: { level: 9 },
   });
+  let rejectInputStream: (error: Error) => void;
+  const inputStreamFailed = new Promise<never>((_resolve, reject) => {
+    rejectInputStream = reject;
+  });
 
   await eachDeployFiles(
     {
@@ -25,18 +29,32 @@ export async function deployZip(inputDir: string, config: Config) {
       parallel: true,
     },
     async ({ relativePath, inputStream }) => {
+      inputStream.once('error', rejectInputStream);
       archive.append(inputStream, { name: relativePath });
     },
   );
 
-  return new Promise<void>((resolve, reject) => {
-    const outputStream = createWriteStream(outputFileName);
-    outputStream.on('close', () => {
-      consola.success(`Created ${outputFileName} (${archive.pointer()} bytes)`);
-      resolve();
-    });
-    outputStream.on('error', (e) => reject(e));
-    archive.pipe(outputStream);
-    archive.finalize();
-  });
+  const outputStream = createWriteStream(outputFileName);
+  let failed = false;
+
+  try {
+    await Promise.race([
+      new Promise<void>((resolve, reject) => {
+        outputStream.on('close', () => {
+          if (!failed) consola.success(`Created ${outputFileName} (${archive.pointer()} bytes)`);
+          resolve();
+        });
+        outputStream.on('error', (e) => reject(e));
+        archive.on('error', (e) => reject(e));
+        archive.pipe(outputStream);
+        archive.finalize().catch(reject);
+      }),
+      inputStreamFailed,
+    ]);
+  } catch (error) {
+    failed = true;
+    archive.abort();
+    outputStream.destroy();
+    throw error;
+  }
 }
