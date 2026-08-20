@@ -3,8 +3,8 @@ import { mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { ZipArchive } from 'archiver';
 import { consola } from 'consola';
-import type { Config } from '../config.js';
-import { eachDeployFiles } from './common.js';
+import type { Config } from '../config';
+import { eachDeployFiles } from './common';
 
 export async function deployZip(inputDir: string, config: Config) {
   const outputFileName = typeof config.zip.output === 'function' ? config.zip.output(inputDir) : config.zip.output;

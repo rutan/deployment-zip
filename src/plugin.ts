@@ -1,6 +1,6 @@
 import type { Readable } from 'node:stream';
-import type { Config } from './config.js';
-import type { DeploymentMode, ParametersType, Promisable } from './types.js';
+import type { Config } from './config';
+import type { DeploymentMode, ParametersType, Promisable } from './types';
 
 export type Plugin = {
   name?: string;

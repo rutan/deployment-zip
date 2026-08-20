@@ -1,9 +1,9 @@
 import { resolve } from 'node:path';
 import { defineCommand, runMain, showUsage } from 'citty';
 import { consola } from 'consola';
-import { loadDeploymentZipConfig, loadPackageJSON } from './config.js';
-import { deploy } from './deploy.js';
-import { isDeploymentMode } from './types.js';
+import { loadDeploymentZipConfig, loadPackageJSON } from './config';
+import { deploy } from './deploy';
+import { isDeploymentMode } from './types';
 
 (async () => {
   const { name, version, description } = await loadPackageJSON();

@@ -3,8 +3,8 @@ import { mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { consola } from 'consola';
-import type { Config } from '../config.js';
-import { eachDeployFiles } from './common.js';
+import type { Config } from '../config';
+import { eachDeployFiles } from './common';
 
 export async function deployCopy(inputDir: string, config: Config) {
   const outputDirName = typeof config.copy.outDir === 'function' ? config.copy.outDir(inputDir) : config.copy.outDir;

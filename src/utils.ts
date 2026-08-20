@@ -4,7 +4,7 @@ import type { Readable } from 'node:stream';
 import { StringDecoder } from 'node:string_decoder';
 import { fileURLToPath } from 'node:url';
 import { createJiti } from 'jiti';
-import type { Config } from './config.js';
+import type { Config } from './config';
 
 export async function loadConfig(configFilePath: string): Promise<Config> {
   if (
